@@ -1,0 +1,265 @@
+<title>Task 5 Tiến độ</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Báo cáo tiến độ Task 5 cho Product Owner: dữ liệu, thử nghiệm, kết quả và phạm vi MVP an toàn.">
+<style>
+/* Layout: editorial progress brief, with a decision summary followed by four evidence-led workstreams. */
+:root {
+  --bg: #f3f6f5;
+  --surface: #ffffff;
+  --surface-soft: #e8efed;
+  --fg: #1c2c2a;
+  --muted: #586b67;
+  --line: #ccd8d4;
+  --accent: #0b7567;
+  --accent-soft: #d8eee9;
+  --warn: #9a5b10;
+  --warn-soft: #f8ead5;
+  --bad: #a2433d;
+  --bad-soft: #f7e3df;
+  --good: #2f6d48;
+  --good-soft: #deeee3;
+  --display: "Alegreya", Georgia, serif;
+  --body: "Source Sans 3", "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101a19;
+    --surface: #192624;
+    --surface-soft: #223330;
+    --fg: #e3eeeb;
+    --muted: #a7bbb5;
+    --line: #354943;
+    --accent: #6ed0b7;
+    --accent-soft: #1d4039;
+    --warn: #f0bd70;
+    --warn-soft: #44331e;
+    --bad: #f09a8e;
+    --bad-soft: #462926;
+    --good: #90d4a8;
+    --good-soft: #203d2a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101a19;
+  --surface: #192624;
+  --surface-soft: #223330;
+  --fg: #e3eeeb;
+  --muted: #a7bbb5;
+  --line: #354943;
+  --accent: #6ed0b7;
+  --accent-soft: #1d4039;
+  --warn: #f0bd70;
+  --warn-soft: #44331e;
+  --bad: #f09a8e;
+  --bad-soft: #462926;
+  --good: #90d4a8;
+  --good-soft: #203d2a;
+  color-scheme: dark;
+}
+:root[data-theme="light"] { color-scheme: light; }
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--body);
+  font-size: 17px;
+  line-height: 1.55;
+  padding-block: 26px 56px;
+  padding-left: max(20px, env(safe-area-inset-left, 0px));
+  padding-right: max(20px, env(safe-area-inset-right, 0px));
+}
+main { width: min(1060px, 100%); margin-inline: auto; display: grid; gap: 24px; }
+.kicker, .label, .metric-label, .section-tag {
+  font-family: var(--mono); text-transform: uppercase; letter-spacing: .09em; font-size: .72rem;
+}
+.kicker { color: var(--accent); font-weight: 600; }
+h1, h2, h3, p { margin: 0; }
+h1, h2 { text-wrap: balance; }
+h1 { font-family: var(--display); font-size: clamp(2.6rem, 7vw, 5rem); line-height: .99; letter-spacing: -.035em; font-weight: 600; max-width: 15ch; }
+h2 { font-family: var(--display); font-size: clamp(1.65rem, 4vw, 2.35rem); line-height: 1.08; font-weight: 600; }
+h3 { font-size: 1.08rem; line-height: 1.25; }
+.hero { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(260px, .65fr); gap: 28px; align-items: end; padding: 10px 0 24px; border-bottom: 1px solid var(--line); }
+.hero-copy { display: grid; gap: 18px; min-width: 0; }
+.hero-copy p { max-width: 65ch; color: var(--muted); }
+.decision { background: var(--surface); border: 1px solid var(--line); border-top: 4px solid var(--warn); padding: 20px; display: grid; gap: 12px; }
+.decision strong { font-size: 1.05rem; }
+.decision p { color: var(--muted); font-size: .95rem; }
+.status-chip { display: inline-flex; align-items: center; gap: 8px; width: fit-content; border-radius: 999px; padding: 6px 10px; background: var(--warn-soft); color: var(--warn); font-family: var(--mono); font-size: .72rem; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
+.status-chip::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.metrics { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; }
+.metric { background: var(--surface-soft); padding: 14px 15px; min-width: 0; }
+.metric strong { display: block; font-family: var(--mono); font-size: clamp(1.12rem, 2vw, 1.45rem); font-variant-numeric: tabular-nums; letter-spacing: -.04em; overflow-wrap: anywhere; }
+.metric span { display: block; color: var(--muted); font-size: .8rem; line-height: 1.35; margin-top: 5px; }
+.section-head { display: flex; justify-content: space-between; gap: 18px; align-items: end; border-bottom: 1px solid var(--line); padding-bottom: 12px; }
+.section-head p { color: var(--muted); max-width: 42ch; font-size: .9rem; }
+.workstreams { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; }
+.stream { background: var(--surface); border: 1px solid var(--line); padding: 20px; display: grid; align-content: start; gap: 14px; min-width: 0; }
+.stream-top { display: flex; justify-content: space-between; align-items: start; gap: 12px; }
+.stream-top > div:first-child { display: grid; gap: 5px; min-width: 0; }
+.section-tag { color: var(--muted); }
+.state { flex: 0 0 auto; border-radius: 999px; padding: 4px 9px; font-family: var(--mono); font-size: .68rem; text-transform: uppercase; letter-spacing: .04em; font-weight: 600; }
+.state.partial { color: var(--warn); background: var(--warn-soft); }
+.state.research { color: var(--accent); background: var(--accent-soft); }
+.state.blocked { color: var(--bad); background: var(--bad-soft); }
+.state.ready { color: var(--good); background: var(--good-soft); }
+.stream p, .stream li { color: var(--muted); font-size: .94rem; }
+ul { margin: 0; padding-left: 1.2rem; display: grid; gap: 6px; }
+.result-table-wrap { width: 100%; overflow-x: auto; border: 1px solid var(--line); background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 680px; font-variant-numeric: tabular-nums; font-size: .9rem; }
+th, td { padding: 11px 14px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--mono); color: var(--muted); font-size: .7rem; text-transform: uppercase; letter-spacing: .06em; background: var(--surface-soft); }
+tr:last-child td { border-bottom: 0; }
+.pass { color: var(--good); font-weight: 600; }
+.fail { color: var(--bad); font-weight: 600; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.note { border-left: 3px solid var(--accent); background: var(--accent-soft); padding: 16px 18px; display: grid; gap: 7px; }
+.note p { color: var(--fg); font-size: .94rem; }
+.note.warn { border-color: var(--warn); background: var(--warn-soft); }
+.next { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; }
+.next article { border-top: 2px solid var(--accent); padding: 13px 2px 0; display: grid; gap: 7px; min-width: 0; }
+.next p { color: var(--muted); font-size: .9rem; }
+.footer { border-top: 1px solid var(--line); padding-top: 13px; display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: .78rem; }
+a { color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible { outline: 3px solid var(--warn); outline-offset: 3px; }
+@media (max-width: 720px) {
+  body { padding-block: 18px 40px; }
+  .hero { grid-template-columns: 1fr; gap: 20px; }
+  .metrics { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .workstreams, .two-col { grid-template-columns: 1fr; }
+  .section-head { align-items: start; flex-direction: column; }
+  .next { grid-template-columns: 1fr; }
+  .stream { padding: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; } }
+</style>
+<header>
+  <main>
+    <section class="hero" aria-labelledby="report-title">
+      <div class="hero-copy">
+        <div class="kicker">Báo cáo cho nhóm sản phẩm · Sức khỏe chủ động</div>
+        <h1 id="report-title">Task 5 đã tiến đến đâu?</h1>
+        <p>Đã chuẩn bị dữ liệu và thử các cách dự báo. Hiện có thể trình diễn biểu đồ theo dõi các chỉ số và câu trả lời tự khai. Chưa có căn cứ đủ chắc để ứng dụng kết luận người dùng mệt, hồi phục kém hoặc cần được cảnh báo.</p>
+      </div>
+      <aside class="decision" aria-label="Tóm tắt quyết định">
+        <span class="status-chip">Chưa nên phát hành dự báo sức khỏe</span>
+        <strong>Đề xuất bản thử nghiệm: cho người dùng xem chỉ số và xu hướng, không tự kết luận tình trạng sức khỏe.</strong>
+        <p>Có thể trình diễn số đo, mức độ đầy đủ dữ liệu và câu trả lời người dùng tự nhập. Phần dự báo và dấu hiệu bất thường chỉ nên để nhóm dự án xem xét nội bộ.</p>
+      </aside>
+    </section>
+
+    <section class="metrics" aria-label="Tổng quan dữ liệu">
+      <div class="metric"><strong>2 nhóm</strong><span>Dữ liệu wearable đi kèm câu trả lời về mệt mỏi</span></div>
+      <div class="metric"><strong>5.221</strong><span>Câu trả lời “Hôm qua bạn có thấy mệt không?” từ 203 người</span></div>
+      <div class="metric"><strong>431</strong><span>Ngày có cả cảm biến và câu trả lời mệt mỏi ở bộ dữ liệu kiểm tra riêng</span></div>
+      <div class="metric"><strong>14/14</strong><span>Bài kiểm tra phần mềm liên quan đều đạt</span></div>
+    </section>
+
+    <section aria-labelledby="progress-title">
+      <div class="section-head">
+        <div><div class="kicker">Trạng thái theo yêu cầu</div><h2 id="progress-title">Bốn phần của Task 5</h2></div>
+        <p>Đã chạy được nghĩa là phần mềm tạo ra kết quả. Điều đó chưa có nghĩa là kết quả đủ đúng để trao cho người dùng.</p>
+      </div>
+      <div class="workstreams">
+        <article class="stream">
+          <div class="stream-top"><div><div class="section-tag">Dự đoán vài ngày tới</div><h3>Thời lượng ngủ · Mức độ mệt · Hồi phục</h3></div><span class="state partial">Đang thử</span></div>
+          <ul>
+            <li>Đã thử ước tính thời lượng ngủ ngày kế tiếp. Sai số trung bình khoảng 57 phút, tốt hơn cách lấy số gần nhất trong một lần kiểm tra.</li>
+            <li>Đã thử đoán câu trả lời “hôm qua có mệt không?”. Kết quả chưa tốt hơn cách đoán mức thường gặp trong nhóm.</li>
+            <li>Chưa có câu trả lời nào đo trực tiếp mức hồi phục. Điểm “gần giống hồi phục” chỉ là số giả lập để thử giao diện.</li>
+          </ul>
+        </article>
+        <article class="stream">
+          <div class="stream-top"><div><div class="section-tag">Tìm ngày khác thường</div><h3>HRV · Nhịp tim nghỉ · Giấc ngủ</h3></div><span class="state research">Chỉ xem nội bộ</span></div>
+          <ul>
+            <li>Đã viết phép so sánh nhịp tim nghỉ và RMSSD với mức thường thấy của cùng một người.</li>
+            <li>Phép tính đánh dấu những ngày lệch nhiều để nhóm kiểm tra; chưa biết bao nhiêu dấu hiệu là cảnh báo đúng.</li>
+            <li>Chưa có cảnh báo nào được gửi đến người dùng.</li>
+          </ul>
+        </article>
+        <article class="stream">
+          <div class="stream-top"><div><div class="section-tag">Thói quen và chỉ số sức khỏe</div><h3>Tìm xem chúng thay đổi cùng nhau không</h3></div><span class="state research">Tìm hiểu ban đầu</span></div>
+          <ul>
+            <li>Đã so số bước với thời lượng ngủ, nhịp tim nghỉ và RMSSD.</li>
+            <li>Khi tính đến khác biệt giữa từng người, một số mối liên hệ yếu đi hoặc đổi chiều.</li>
+            <li>Đây là những thứ thay đổi cùng nhau; chưa chứng minh một thứ gây ra thứ kia. Chưa tạo lời khuyên riêng cho từng người.</li>
+          </ul>
+        </article>
+        <article class="stream">
+          <div class="stream-top"><div><div class="section-tag">Gửi nhắc nhở đúng lúc</div><h3>Thông tin · Cảnh báo · Gợi ý</h3></div><span class="state blocked">Chưa bật</span></div>
+          <ul>
+            <li>Đã thử quy tắc giới hạn số nhắc nhở trên dữ liệu giả lập từ phép tìm ngày lệch thường.</li>
+            <li>Chưa hỏi người dùng xem nhắc nhở nào hữu ích, nhắc nhở nào gây phiền.</li>
+            <li>Chưa gửi thông báo hoặc gợi ý sức khỏe thật.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section aria-labelledby="evidence-title">
+      <div class="section-head">
+        <div><div class="kicker">Bằng chứng mô hình</div><h2 id="evidence-title">Kết quả Fatigue hiện chưa đủ để phát hành</h2></div>
+        <p>Con số này là mức lệch trung bình giữa kết quả đoán và câu trả lời thật. Với câu hỏi 5 mức, sai số 1 nghĩa là thường lệch khoảng một mức. Baseline là phép đoán đơn giản dùng để xem mô hình có thực sự tốt hơn không.</p>
+      </div>
+      <div class="result-table-wrap" role="region" aria-label="Bảng so sánh model và baseline" tabindex="0">
+        <table>
+          <thead><tr><th>Câu hỏi cần đoán</th><th>Cách kiểm tra</th><th>Sai số của mô hình</th><th>Sai số cách đoán đơn giản</th><th>Hiểu kết quả</th></tr></thead>
+          <tbody>
+            <tr><td>Mức mệt, người chưa gặp</td><td>Giữ riêng toàn bộ dữ liệu của một số người để kiểm tra</td><td>Khoảng 0,97–1,18 mức</td><td>0,97 mức</td><td class="fail">Chưa tốt hơn một cách ổn định</td></tr>
+            <tr><td>Mức mệt, người đã có lịch sử</td><td>Dùng giai đoạn sau để kiểm tra, bỏ cách biệt 7 ngày</td><td>Chỉ số đeo + câu trả lời cũ: 0,62–0,68 mức</td><td>Trung bình 3 câu trả lời cũ: 0,61–0,79 mức</td><td>Thắng ở một số giai đoạn, thua ở giai đoạn khác</td></tr>
+            <tr><td>Mức mệt trong bộ dữ liệu khác</td><td>Thang 1–10, 28 người, kiểm tra theo từng người</td><td>1,89 điểm</td><td>1,94 điểm</td><td class="fail">Khác biệt nhỏ; mới là thử nghiệm quy mô nhỏ</td></tr>
+            <tr><td>Thời lượng ngủ ngày mai</td><td>Dữ liệu LifeSnaps, một lần chia nhóm người kiểm tra</td><td>Sai trung bình 57 phút</td><td>Sai trung bình 72 phút</td><td class="pass">Có tín hiệu ban đầu; cần kiểm tra trên dữ liệu mới</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note warn"><strong>Điều cần hiểu về nhãn mệt</strong><p>“Hôm qua bạn có thấy mệt không?” là câu trả lời do người tham gia tự chọn. Nó không phải bác sĩ xác nhận người đó bị mệt, cũng không phải điểm đo mức hồi phục. Bảng 0–4 chỉ đổi các câu trả lời thành số để máy tính so sánh; chưa chứng minh khoảng cách giữa mỗi mức là bằng nhau.</p></div>
+    </section>
+
+    <section aria-labelledby="data-title">
+      <div class="section-head">
+        <div><div class="kicker">Nền dữ liệu</div><h2 id="data-title">Đủ để nghiên cứu, chưa đồng nhất như dữ liệu sản phẩm</h2></div>
+        <p>Dữ liệu đến từ các thiết bị và nhóm người khác nhau. Mỗi nguồn cần được xem riêng, không trộn tùy tiện.</p>
+      </div>
+      <div class="two-col">
+        <article class="stream">
+          <h3>Đã có</h3>
+          <ul>
+            <li>Zenodo 8018238: Fitbit theo ngày và khảo sát, trong đó có câu hỏi hằng ngày về mức mệt.</li>
+            <li>LifeSnaps/RAIS: Fitbit theo ngày và nhiều khảo sát về stress, cảm xúc, vận động.</li>
+            <li>BIDSleep: nhịp tim Apple Watch ban đêm cùng nhãn giấc ngủ từ điện não đồ; một phần dữ liệu chuyển động tải chưa xong.</li>
+            <li>Zenodo 4266157: cảm biến đa dạng và câu trả lời mức mệt từ 1 đến 10; đã tải đủ, có 431 ngày ghép được.</li>
+          </ul>
+        </article>
+        <article class="stream">
+          <h3>Còn giới hạn</h3>
+          <ul>
+            <li>Chưa xác nhận được đơn vị và cách tính của một số chỉ số Fitbit.</li>
+            <li>Các bộ dùng thiết bị, nhóm người và cách hỏi khác nhau; không thể gộp thành một bộ như thể cùng một nghiên cứu.</li>
+            <li>Bộ 4266157 chỉ có ít người khỏe mạnh và thời gian theo dõi ngắn; chưa đại diện cho khách hàng sản phẩm.</li>
+            <li>Chưa có câu trả lời đo trực tiếp mức hồi phục và chưa có người xác nhận ngày nào thực sự cần cảnh báo.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section aria-labelledby="decision-title">
+      <div class="section-head">
+        <div><div class="kicker">Gợi ý phạm vi bản thử nghiệm</div><h2 id="decision-title">Phần nào có thể trình diễn an toàn?</h2></div>
+      </div>
+      <div class="next">
+        <article><h3>Có thể đưa vào bản demo</h3><p>Cho xem các chỉ số đã đo, biểu đồ theo thời gian, dữ liệu có đủ hay không và câu trả lời check-in do người dùng tự nhập.</p></article>
+        <article><h3>Chỉ nhóm dự án xem</h3><p>Các dự đoán mức mệt, dấu hiệu ngày bất thường và thử nghiệm model; cần thêm kiểm tra trước khi công khai.</p></article>
+        <article><h3>Chưa bật cho người dùng</h3><p>Điểm hồi phục, lời khuyên riêng và thông báo tự động. Cần hỏi người dùng theo thời gian và kiểm tra cảnh báo đúng/sai trước.</p></article>
+      </div>
+      <div class="note"><strong>Bước tiếp theo hữu ích nhất</strong><p>Trong một đợt thử nghiệm mới, hỏi người tham gia về mức mệt và mức cảm thấy sẵn sàng/hồi phục bằng hai câu riêng, vào giờ cố định. Ghi lại dữ liệu đồng hồ có đủ hay không và lý do bỏ qua khảo sát. Sau đó thử trên những người và giai đoạn chưa dùng để xây mô hình.</p></div>
+    </section>
+
+    <footer class="footer">
+      <span>Nguồn chính: Zenodo fatigue cohorts 8018238 &amp; 4266157; LifeSnaps/RAIS; BIDSleep.</span>
+      <span>Task 5 · Báo cáo tiến độ PO</span>
+    </footer>
+  </main>
+</header>

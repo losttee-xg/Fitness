@@ -1,0 +1,213 @@
+<title>Task 5: Biểu đồ dữ liệu</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Bổ sung biểu đồ phân bố dữ liệu, kết quả huấn luyện và đánh giá, cùng độ phủ của các bộ dữ liệu Task 5.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout: compact evidence dashboard: label distribution, paired model errors, split stability, and source coverage. */
+:root {
+  --page: #f8f9f7;
+  --surface: #fcfcfb;
+  --ink: #0b0b0b;
+  --secondary: #52514e;
+  --muted: #70706b;
+  --grid: #e1e0d9;
+  --baseline: #c3c2b7;
+  --blue: #2a78d6;
+  --orange: #eb6834;
+  --aqua: #1baf7a;
+  --yellow: #eda100;
+  --good: #0ca30c;
+  --warn: #fab219;
+  --serious: #ec835a;
+  --critical: #d03b3b;
+  --surface-gap: #fcfcfb;
+  --tooltip: #fcfcfb;
+  --tooltip-border: #c3c2b7;
+  --focus: #6250d6;
+  --sans: "Source Sans 3", "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --page: #0d0d0d;
+    --surface: #1a1a19;
+    --ink: #f0efec;
+    --secondary: #c3c2b7;
+    --muted: #aaa99f;
+    --grid: #2c2c2a;
+    --baseline: #58584f;
+    --blue: #3987e5;
+    --orange: #d95926;
+    --aqua: #199e70;
+    --yellow: #c98500;
+    --good: #0ca30c;
+    --warn: #fab219;
+    --serious: #ec835a;
+    --critical: #d03b3b;
+    --surface-gap: #1a1a19;
+    --tooltip: #1a1a19;
+    --tooltip-border: #58584f;
+    --focus: #9085e9;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --page: #0d0d0d;
+  --surface: #1a1a19;
+  --ink: #f0efec;
+  --secondary: #c3c2b7;
+  --muted: #aaa99f;
+  --grid: #2c2c2a;
+  --baseline: #58584f;
+  --blue: #3987e5;
+  --orange: #d95926;
+  --aqua: #199e70;
+  --yellow: #c98500;
+  --good: #0ca30c;
+  --warn: #fab219;
+  --serious: #ec835a;
+  --critical: #d03b3b;
+  --surface-gap: #1a1a19;
+  --tooltip: #1a1a19;
+  --tooltip-border: #58584f;
+  --focus: #9085e9;
+  color-scheme: dark;
+}
+:root[data-theme="light"] { color-scheme: light; }
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--page); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.5;
+  padding-block: 24px 52px; padding-left: max(18px, env(safe-area-inset-left, 0px)); padding-right: max(18px, env(safe-area-inset-right, 0px));
+}
+main { width: min(1120px,100%); margin-inline: auto; display: grid; gap: 23px; }
+h1,h2,h3,p { margin: 0; }
+h1 { font: 700 clamp(2.1rem,5.5vw,3.6rem)/1.02 var(--sans); letter-spacing: -.04em; max-width: 20ch; text-wrap: balance; }
+h2 { font: 600 clamp(1.35rem,3.3vw,1.9rem)/1.15 var(--sans); letter-spacing: -.02em; text-wrap: balance; }
+h3 { font-size: 1.05rem; line-height: 1.25; }
+.kicker,.meta,.chart-kicker,.metric-val { font-family: var(--mono); }
+.kicker { color: var(--secondary); font-size: .75rem; letter-spacing: .1em; text-transform: uppercase; }
+.hero { border-bottom: 1px solid var(--grid); padding-bottom: 19px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 18px; }
+.hero-copy { display: grid; gap: 10px; min-width: 0; }
+.hero-copy p { color: var(--secondary); max-width: 68ch; }
+.summary { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 10px; }
+.stat { background: var(--surface); border: 1px solid var(--grid); padding: 13px 15px; min-width: 0; }
+.stat b { display:block; font: 600 1.18rem var(--mono); font-variant-numeric: tabular-nums; }
+.stat span { display:block; color:var(--secondary); font-size:.82rem; margin-top:4px; }
+.panel { background: var(--surface); border: 1px solid var(--grid); padding: 18px; display: grid; gap: 14px; min-width: 0; }
+.panel-head { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:end; gap:10px; }
+.panel-head p { color:var(--secondary); font-size:.9rem; max-width:56ch; }
+.grid2 { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+.chart-wrap { width:100%; overflow-x:auto; position:relative; }
+.chart { display:block; width:100%; height:auto; overflow:visible; }
+.chart text { font: 12px var(--sans); fill:var(--secondary); }
+.chart .axis { stroke:var(--baseline); stroke-width:1; }
+.chart .grid { stroke:var(--grid); stroke-width:1; }
+.chart .bar { rx:4; ry:4; }
+.legend { display:flex; flex-wrap:wrap; gap:13px; color:var(--secondary); font-size:.82rem; }
+.legend-item { display:inline-flex; align-items:center; gap:7px; }
+.swatch { width:10px; height:10px; border-radius:2px; display:inline-block; border:1px solid color-mix(in srgb,var(--ink),transparent 75%); }
+.hint { color:var(--muted); font-size:.83rem; }
+.tooltip { position:fixed; z-index:20; display:none; max-width:min(280px,calc(100vw - 32px)); pointer-events:none; background:var(--tooltip); border:1px solid var(--tooltip-border); padding:8px 10px; color:var(--ink); box-shadow:0 3px 12px color-mix(in srgb,var(--ink),transparent 85%); font-size:.84rem; }
+.chart [tabindex="0"] { cursor:help; }
+.chart [tabindex="0"]:focus-visible { stroke:var(--focus); stroke-width:3; outline:none; }
+.table-wrap { overflow-x:auto; width:100%; border:1px solid var(--grid); }
+table { border-collapse:collapse; width:100%; min-width:690px; font-size:.87rem; font-variant-numeric:tabular-nums; }
+th,td { padding:9px 11px; text-align:left; vertical-align:top; border-bottom:1px solid var(--grid); }
+th { background:color-mix(in srgb,var(--surface),var(--grid) 35%); color:var(--secondary); font:500 .69rem var(--mono); letter-spacing:.06em; text-transform:uppercase; }
+tr:last-child td { border-bottom:0; }
+.note { border-left:3px solid var(--orange); background:color-mix(in srgb,var(--surface),var(--orange) 7%); padding:12px 14px; color:var(--secondary); font-size:.9rem; }
+.note strong { color:var(--ink); }
+.footer { border-top:1px solid var(--grid); padding-top:12px; display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; color:var(--muted); font-size:.78rem; }
+@media(max-width:760px) { body {padding-block:15px 35px} .summary{grid-template-columns:repeat(2,minmax(0,1fr))}.grid2{grid-template-columns:1fr}.panel{padding:14px} }
+@media(prefers-reduced-motion:reduce) { * {scroll-behavior:auto!important} }
+</style>
+<header>
+<main>
+  <section class="hero">
+    <div class="hero-copy"><div class="kicker">Task 5 · Biểu đồ khám phá dữ liệu &amp; kết quả thử</div><h1>Dữ liệu nào đang giúp dự đoán?</h1><p>Các biểu đồ bên dưới lấy từ dữ liệu thật và những lần đánh giá đã chạy. Mục đích là nhìn rõ phân bố câu trả lời, mức sai số, độ ổn định theo thời gian và độ phủ nguồn dữ liệu. Chúng chưa chứng minh mô hình phù hợp để đưa ra lời khuyên sức khỏe.</p></div>
+    <div class="meta">Bản cập nhật · 23/10/2026<br>Đơn vị, nhãn và cohort được giữ riêng</div>
+  </section>
+  <section class="summary" aria-label="Tổng quan"><div class="stat"><b>5.221</b><span>câu trả lời mệt hằng ngày dùng trong thử nghiệm</span></div><div class="stat"><b>203</b><span>người trong cohort fatigue chính</span></div><div class="stat"><b>431 ngày</b><span>ghép wearable + fatigue ở cohort độc lập</span></div><div class="stat"><b>14 / 14</b><span>bài kiểm tra phần mềm đã qua</span></div></section>
+
+  <section class="panel" aria-labelledby="dist-title">
+    <div class="panel-head"><div><div class="chart-kicker">01 · Nhãn fatigue</div><h2 id="dist-title">Câu trả lời nghiêng nhiều về mức mệt nhẹ</h2></div><p>Mỗi câu hỏi có 5 lựa chọn, được xếp theo thứ tự từ “không mệt” đến “rất mệt”. Đây là câu trả lời tự khai, không phải chẩn đoán.</p></div>
+    <div class="chart-wrap"><svg id="fatigueDist" class="chart" viewBox="0 0 820 300" role="img" aria-labelledby="dist-title dist-desc"><desc id="dist-desc">Biểu đồ cột số lượng câu trả lời theo năm mức fatigue.</desc></svg></div>
+    <p class="hint">Số câu theo mức: Không mệt 1.146 · Hơi mệt 1.829 · Mệt vừa 991 · Khá mệt 820 · Rất mệt 435. Tổng 5.221 câu. Mức mệt nhẹ là câu trả lời phổ biến nhất.</p>
+  </section>
+
+  <section class="grid2">
+    <article class="panel" aria-labelledby="newuser-title">
+      <div class="panel-head"><div><div class="chart-kicker">02 · Người mới</div><h2 id="newuser-title">Giữ riêng cả người tham gia khi kiểm tra</h2></div><p>So MAE ordinal; thấp hơn là tốt hơn.</p></div>
+      <div class="legend"><span class="legend-item"><i class="swatch" style="background:var(--blue)"></i>Cách đoán đơn giản</span><span class="legend-item"><i class="swatch" style="background:var(--orange)"></i>Mô hình AI</span></div>
+      <div class="chart-wrap"><svg id="newUserChart" class="chart" viewBox="0 0 620 340" role="img" aria-labelledby="newuser-title newuser-desc"><desc id="newuser-desc">So sánh ordinal MAE baseline với một số model khi kiểm tra người chưa thấy.</desc></svg></div>
+      <p class="hint">MAE ordinal xem các mức trả lời như có khoảng cách bằng nhau để tính sai số. Giả định này tiện cho thử nghiệm nhưng chưa chắc đúng về mặt thang đo.</p>
+    </article>
+    <article class="panel" aria-labelledby="known-title">
+      <div class="panel-head"><div><div class="chart-kicker">03 · Người đã có lịch sử</div><h2 id="known-title">Lịch sử tự khai là baseline rất mạnh</h2></div><p>Kiểm tra các giai đoạn tương lai riêng, có khoảng ngắt 7 ngày.</p></div>
+      <div class="legend"><span class="legend-item"><i class="swatch" style="background:var(--blue)"></i>Trung bình 3 câu cũ</span><span class="legend-item"><i class="swatch" style="background:var(--orange)"></i>Wearable + câu trả lời cũ</span></div>
+      <div class="chart-wrap"><svg id="knownUserChart" class="chart" viewBox="0 0 620 340" role="img" aria-labelledby="known-title known-desc"><desc id="known-desc">So sánh MAE theo ba giai đoạn kiểm tra trên thời gian.</desc></svg></div>
+      <p class="hint">Mô hình kết hợp có sai số thấp hơn rolling-3 ở giai đoạn 1, cao hơn ở giai đoạn 2 và 3. Điều này chưa cho thấy cải thiện ổn định.</p>
+    </article>
+  </section>
+
+  <section class="panel" aria-labelledby="group-title">
+    <div class="panel-head"><div><div class="chart-kicker">04 · Thử nghiệm cohort khác</div><h2 id="group-title">Chỉ có tín hiệu thắng baseline nhẹ</h2></div><p>Zenodo 4266157: cảm biến ngày trước so với câu hỏi fatigue thang 1–10, chia 5 fold theo người.</p></div>
+    <div class="chart-wrap"><svg id="independentChart" class="chart" viewBox="0 0 820 280" role="img" aria-labelledby="group-title group-desc"><desc id="group-desc">So sánh MAE giữa model và median baseline trên independent cohort.</desc></svg></div>
+    <p class="hint">Model MAE 1,888 điểm trên 10; baseline median MAE 1,941. Cohort chỉ có 28 người và dữ liệu pilot, nên xem là kiểm tra ban đầu, không phải xác nhận cuối.</p>
+  </section>
+
+  <section class="grid2">
+    <article class="panel" aria-labelledby="coverage-title">
+      <div class="panel-head"><div><div class="chart-kicker">05 · Số ngày có thiết bị</div><h2 id="coverage-title">Các nguồn có mật độ khác nhau</h2></div><p>Số đêm/ngày theo mô tả nguồn và kiểm kê cục bộ.</p></div>
+      <div class="chart-wrap"><svg id="coverageChart" class="chart" viewBox="0 0 620 320" role="img" aria-labelledby="coverage-title coverage-desc"><desc id="coverage-desc">So sánh số đêm/ngày trong các cohort nghiên cứu.</desc></svg></div>
+      <p class="hint">BIDSleep 253 đêm; Sleep-Accel tối đa 31 đêm lab; Zenodo 8018238 có 3.950 ngày ghép wearable và khảo sát trong dataset phân tích; Zenodo 4266157 có 405 ngày ghép trong nghiên cứu và 431 ngày ghép được trong adapter cục bộ. Định nghĩa ghép khác nhau nên đây chỉ là quy mô, không so chất lượng trực tiếp.</p>
+    </article>
+    <article class="panel" aria-labelledby="steps-title">
+      <div class="panel-head"><div><div class="chart-kicker">06 · Bằng chứng và bước tiếp</div><h2 id="steps-title">Từ biểu đồ đến quyết định MVP</h2></div></div>
+      <div class="table-wrap"><table><thead><tr><th>Đã làm được</th><th>Còn thiếu để phát hành</th></tr></thead><tbody><tr><td>Trend số đo, độ phủ, tự khai fatigue, benchmark ngủ, ứng viên bất thường nội bộ.</td><td>Nhãn Recovery trực tiếp; xác nhận đơn vị; kiểm tra prospective; đo cảnh báo sai.</td></tr><tr><td>14 bài test phần mềm pass; dữ liệu synthetic nằm riêng.</td><td>Thử nghiệm mới chưa dùng để chọn model và cohort phù hợp với khách hàng mục tiêu.</td></tr></tbody></table></div>
+      <div class="note"><strong>Khuyến nghị</strong><br>Demo biểu đồ và lịch sử check-in. Không hiển thị kết luận “bạn hồi phục kém” hoặc gửi cảnh báo tự động.</div>
+    </article>
+  </section>
+
+  <section class="panel" aria-labelledby="table-title">
+    <div class="panel-head"><div><div class="chart-kicker">Bảng số liệu đi kèm</div><h2 id="table-title">Có thể đọc được mà không cần rê chuột</h2></div><p>Biểu đồ có tooltip khi rê chuột hoặc dùng bàn phím. Bảng này giữ cùng số liệu để đọc trên màn hình nhỏ hoặc dùng công nghệ hỗ trợ.</p></div>
+    <div class="table-wrap"><table><thead><tr><th>Thí nghiệm</th><th>Mô hình</th><th>Baseline</th><th>Kết luận</th></tr></thead><tbody>
+      <tr><td>Tiredness · người mới</td><td>Ordinal MAE từ 0,97 đến 1,18</td><td>0,973</td><td>Chưa có cải thiện ổn định</td></tr>
+      <tr><td>Tiredness · người đã có lịch sử</td><td>Wearable + câu trả lời cũ: 0,635 / 0,631 / 0,682</td><td>Rolling-3: 0,642 / 0,650 / 0,788</td><td>Thắng 1/3 khối theo baseline này</td></tr>
+      <tr><td>Cohort độc lập 4266157</td><td>MAE 1,888 trên thang 1–10</td><td>1,941</td><td>Chênh lệch nhỏ; pilot 28 người</td></tr>
+      <tr><td>Thời lượng ngủ · ngày sau</td><td>MAE 56,8 phút</td><td>71,8 phút</td><td>Tín hiệu thử ban đầu; một lần chia tập</td></tr>
+    </tbody></table></div>
+  </section>
+  <footer class="footer"><span>Chỉ sử dụng nhãn khảo sát gốc; không có nhãn/đo lường sinh bằng LLM.</span><span>Task 5 · EDA &amp; đánh giá</span></footer>
+</main>
+<div id="tip" class="tooltip" role="status" aria-live="polite"></div>
+</header>
+<script>
+const C = {blue:'#2a78d6',orange:'#eb6834',aqua:'#1baf7a',yellow:'#eda100',ink:'#0b0b0b',muted:'#70706b',grid:'#e1e0d9',baseline:'#c3c2b7',surface:'#fcfcfb'};
+const DATA = {
+  fatigue: [{label:'Không mệt',value:1146},{label:'Hơi mệt',value:1829},{label:'Mệt vừa',value:991},{label:'Khá mệt',value:820},{label:'Rất mệt',value:435}],
+  newUser: [{label:'Median đơn giản',base:.973,model:.972},{label:'HGB classifier',base:.973,model:1.126},{label:'HGB làm tròn',base:.973,model:.972},{label:'ExtraTrees cân bằng',base:.973,model:1.178},{label:'RandomForest cân bằng',base:.973,model:1.191}],
+  known: [{label:'Giai đoạn 1 · n=876',base:.642,model:.635},{label:'Giai đoạn 2 · n=320',base:.650,model:.631},{label:'Giai đoạn 3 · n=85',base:.788,model:.682}],
+  independent: [{label:'Baseline trung vị',value:1.941,color:'blue'},{label:'ExtraTrees model',value:1.888,color:'orange'}],
+  coverage: [{label:'Zenodo 8018238 · ngày ghép',value:3950},{label:'Zenodo 4266157 · ngày ghép adapter',value:431},{label:'BIDSleep · đêm',value:253},{label:'Sleep-Accel · tối đa đêm lab',value:31}]
+};
+const NS='http://www.w3.org/2000/svg';
+function svgEl(tag,attrs={},text=''){const e=document.createElementNS(NS,tag);for(const[k,v]of Object.entries(attrs))e.setAttribute(k,String(v));if(text)e.textContent=text;return e;}
+function add(svg,tag,attrs,text){const e=svgEl(tag,attrs,text);svg.appendChild(e);return e;}
+function text(svg,x,y,value,attrs={}){return add(svg,'text',{x,y,...attrs},value);}
+function setup(id){const s=document.getElementById(id);s.replaceChildren();return s;}
+function bindTip(el,html){el.addEventListener('pointerenter',ev=>showTip(ev,html));el.addEventListener('pointermove',ev=>moveTip(ev));el.addEventListener('pointerleave',hideTip);el.addEventListener('focus',()=>showTip({clientX:innerWidth/2,clientY:innerHeight/2},html));el.addEventListener('blur',hideTip);}
+function showTip(ev,html){const t=document.getElementById('tip');t.innerHTML=html;t.style.display='block';moveTip(ev);}
+function moveTip(ev){const t=document.getElementById('tip');if(t.style.display!=='block')return;const x=Math.min(innerWidth-300,Math.max(10,ev.clientX+14));const y=Math.min(innerHeight-100,Math.max(10,ev.clientY+14));t.style.left=x+'px';t.style.top=y+'px';}
+function hideTip(){document.getElementById('tip').style.display='none';}
+function grid(svg,{left,top,width,height,max,ticks}){for(let i=0;i<=ticks;i++){const v=max*i/ticks,y=top+height-height*i/ticks;add(svg,'line',{x1:left,y1:y,x2:left+width,y2:y,class:i===0?'axis':'grid'});text(svg,left-10,y+4,Number.isInteger(v)?String(v):v.toFixed(1),{'text-anchor':'end'});}}
+function drawFatigue(){const s=setup('fatigueDist'),W=820,left=160,top=22,barW=570,rowH=47,max=2000;grid(s,{left,top,width:barW,height:rowH*5,max,ticks:4});DATA.fatigue.forEach((d,i)=>{const y=top+i*rowH+9,w=d.value/max*barW;text(s,left-12,y+16,d.label,{'text-anchor':'end'});const r=add(s,'rect',{x:left,y,width:w,height:24,rx:4,fill:C.blue,tabindex:0,role:'graphics-symbol'});bindTip(r,`<strong>${d.label}</strong><br>${d.value.toLocaleString('vi-VN')} câu trả lời · ${(d.value/5221*100).toFixed(1)}%`);text(s,left+w+8,y+17,d.value.toLocaleString('vi-VN'));});}
+function drawGrouped(id,rows,max){const s=setup(id),W=620,left=160,top=25,barW=390,rowH=55;grid(s,{left,top,width:barW,height:rowH*rows.length,max,ticks:4});rows.forEach((d,i)=>{const y=top+i*rowH+4;text(s,left-12,y+27,d.label,{'text-anchor':'end'});[[d.base,C.blue,'Baseline'],[d.model,C.orange,'Mô hình']].forEach(([v,color,name],j)=>{const yy=y+j*20,w=v/max*barW;const r=add(s,'rect',{x:left,y:yy,width:w,height:14,rx:3,fill:color,tabindex:0,role:'graphics-symbol'});bindTip(r,`<strong>${d.label}</strong><br>${name}: ${Number(v).toFixed(3)} mức sai số`);if(w>45)text(s,left+w+7,yy+12,Number(v).toFixed(2));});});}
+function drawPaired(){const s=setup('knownUserChart'),W=620,left=145,top=25,barW=400,rowH=73,max=1.0;grid(s,{left,top,width:barW,height:rowH*3,max,ticks:4});DATA.known.forEach((d,i)=>{const y=top+i*rowH+6;text(s,left-12,y+29,d.label,{'text-anchor':'end'});[[d.base,C.blue,'Trung bình 3 câu cũ'],[d.model,C.orange,'Wearable + lịch sử']].forEach(([v,color,name],j)=>{const yy=y+j*23,w=v/max*barW;const r=add(s,'rect',{x:left,y:yy,width:w,height:16,rx:3,fill:color,tabindex:0,role:'graphics-symbol'});bindTip(r,`<strong>${d.label}</strong><br>${name}: ${Number(v).toFixed(3)} MAE`);text(s,left+w+6,yy+13,Number(v).toFixed(3));});});}
+function drawSingle(id,rows,max){const s=setup(id),left=190,top=25,barW=560,rowH=54;grid(s,{left,top,width:barW,height:rowH*rows.length,max,ticks:4});rows.forEach((d,i)=>{const y=top+i*rowH+10;text(s,left-12,y+17,d.label,{'text-anchor':'end'});const color=d.color==='orange'?C.orange:C.blue,w=d.value/max*barW;const r=add(s,'rect',{x:left,y,width:w,height:25,rx:4,fill:color,tabindex:0,role:'graphics-symbol'});bindTip(r,`<strong>${d.label}</strong><br>MAE: ${d.value.toFixed(3)}`);text(s,left+w+7,y+18,d.value.toFixed(3));});}
+function drawCoverage(){const s=setup('coverageChart'),left=235,top=20,barW=325,rowH=53,max=4000;grid(s,{left,top,width:barW,height:rowH*DATA.coverage.length,max,ticks:4});DATA.coverage.forEach((d,i)=>{const y=top+i*rowH+9;text(s,left-12,y+17,d.label,{'text-anchor':'end'});const w=d.value/max*barW;const r=add(s,'rect',{x:left,y,width:w,height:24,rx:4,fill:C.aqua,tabindex:0,role:'graphics-symbol'});bindTip(r,`<strong>${d.label}</strong><br>${d.value.toLocaleString('vi-VN')} ngày/đêm (định nghĩa ghép khác nhau)`);text(s,left+w+7,y+17,d.value.toLocaleString('vi-VN'));});}
+drawFatigue();drawGrouped('newUserChart',DATA.newUser,1.3);drawPaired();drawSingle('independentChart',DATA.independent,2.2);drawCoverage();
+</script>

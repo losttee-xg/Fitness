@@ -1,0 +1,34 @@
+# Virtual environment & caches
+.venv/
+__pycache__/
+*.py[cod]
+.env
+.pytest_cache/
+
+# Databases & local run outputs
+*.sqlite3
+*.db
+
+# Binary / raw / large data formats
+*.bson
+*.pkl
+*.zip
+*.tar
+*.tar.gz
+*.gz
+*.7z
+*.mat
+*.dat
+*.part
+
+# Raw datasets & archives
+dataset/
+data/research/archives/
+data/research/extracted/
+data/research/raw/
+data/research/ocr/
+data/research/task5/
+data/research/normalized/
+
+# Exclude generated/normalized intermediate JSON if desired
+data/normalized/*.json

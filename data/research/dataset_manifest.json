@@ -1,0 +1,127 @@
+{
+  "bundle_version": "1.0.0",
+  "purpose": "Engineering ingestion and normalization tests only; not clinical validation and not user data.",
+  "datasets": [
+    {
+      "dataset_id": "pamap2",
+      "title": "PAMAP2 Physical Activity Monitoring",
+      "source_url": "https://archive.ics.uci.edu/dataset/231/pamap2+physical+activity+monitoring",
+      "download_url": "https://archive.ics.uci.edu/static/public/231/pamap2+physical+activity+monitoring.zip",
+      "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "source_citation": "Reiss and Stricker, Creating and Benchmarking a New Dataset for Physical Activity Monitoring, 2012.",
+      "expected_content": "Subject/session time series with timestamp seconds, activity IDs, heart rate bpm and IMU columns.",
+      "ingestion_status": "download_pending",
+      "limitations": ["9 participants", "research recording format, not Apple Health or Health Connect export"]
+    },
+    {
+      "dataset_id": "ppg_dalia",
+      "title": "PPG-DaLiA",
+      "source_url": "https://archive.ics.uci.edu/dataset/495/ppg-dalia",
+      "download_url": "https://archive.ics.uci.edu/static/public/495/ppg+dalia.zip",
+      "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "source_citation": "PPG-DaLiA: A PPG Dataset for Motion Compensation and Heart Rate Estimation in Daily Life.",
+      "expected_content": "Wrist PPG and motion signals with chest ECG-derived heart-rate reference.",
+      "ingestion_status": "download_pending",
+      "limitations": ["15 participants", "large archive", "inspect formats before parsing; do not execute bundled code"]
+    },
+    {
+      "dataset_id": "physionet_wearable_device",
+      "title": "Wearable Device Dataset from Induced Stress and Structured Exercise Sessions",
+      "source_url": "https://physionet.org/content/wearable-device-dataset/1.0.1/",
+      "download_url": "https://physionet.org/content/wearable-device-dataset/get-zip/1.0.1/",
+      "license": "ODC-By 1.0",
+      "license_url": "https://physionet.org/content/wearable-device-dataset/view-license/1.0.1/",
+      "source_citation": "Cite dataset page and associated publication as specified by PhysioNet.",
+      "expected_content": "CSV wearable signals and session metadata with UTC start times and signal sampling rates.",
+      "ingestion_status": "download_pending",
+      "limitations": ["research protocol and limited participants", "different sampling rate per signal", "some files have documented constraints"]
+    },
+    {
+      "dataset_id": "bidmc",
+      "title": "BIDMC PPG and Respiration Dataset",
+      "source_url": "https://physionet.org/content/bidmc/1.0.0/",
+      "download_url": "https://physionet.org/content/bidmc/get-zip/1.0.0/",
+      "license": "ODC-By 1.0",
+      "license_url": "https://physionet.org/content/bidmc/view-license/1.0.0/",
+      "source_citation": "Cite dataset page and original publication as specified by PhysioNet.",
+      "expected_content": "WFDB signals and CSV numerics/annotations including HR, RR, PR and SpO2.",
+      "ingestion_status": "download_pending",
+      "limitations": ["critically ill hospital cohort", "53 short recordings", "not representative of consumer smartwatch data"]
+    },
+    {
+      "dataset_id": "sleepaccel",
+      "title": "Motion and heart rate from a wrist-worn wearable and labeled sleep from polysomnography",
+      "source_url": "https://physionet.org/content/sleep-accel/1.0.0/",
+      "download_url": "https://physionet.org/content/sleep-accel/get-zip/1.0.0/",
+      "license": "ODC-By 1.0",
+      "license_url": "https://physionet.org/content/sleep-accel/view-license/1.0.0/",
+      "source_citation": "Walch, O. (2019). Motion and heart rate from a wrist-worn wearable and labeled sleep from polysomnography (version 1.0.0). PhysioNet. https://doi.org/10.13026/hmhs-py35",
+      "expected_content": "Per-subject text files for acceleration, heart rate, steps and PSG-scored sleep labels; timestamps are elapsed seconds from PSG start.",
+      "ingestion_status": "sample_downloaded_normalized",
+      "sample_subject": "1066528",
+      "sample_files": "data/research/raw/sleepaccel/1066528/",
+      "normalized_output": "data/research/normalized/sleep_samples/sleep_samples.jsonl",
+      "limitations": ["31 participants", "research files, not HealthKit export", "sleep labels are PSG-derived and not equivalent to consumer wearable labels", "only one subject sample downloaded due slow full archive throughput"]
+    },
+    {
+      "dataset_id": "bidsleep",
+      "title": "A Multi-Night Instantaneous Heart Rate and Accelerometry Dataset with EEG Sleep Stage Labels",
+      "source_url": "https://physionet.org/content/bidsleep-dataset/1.0.1/",
+      "download_url": "https://physionet.org/content/bidsleep-dataset/get-zip/1.0.1/",
+      "license": "ODC-By 1.0",
+      "license_url": "https://physionet.org/content/bidsleep-dataset/view-license/1.0.1/",
+      "source_citation": "Song, T., Zhang, Y., Zhou, Z., & Dutta, J. (2026). A Multi-Night Instantaneous Heart Rate and Accelerometry Dataset with EEG Sleep Stage Labels (version 1.0.1). PhysioNet. https://doi.org/10.13026/rees-1092",
+      "expected_content": "Per subject-night motion.csv and hr.csv with Unix timestamps, plus labels.mat containing 30-second EEG sleep-stage labels.",
+      "ingestion_status": "sample_downloaded_normalized",
+      "sample_subject_night": "Bidslab00/1",
+      "sample_files": "data/research/raw/bidsleep/Bidslab00/1/",
+      "normalized_output": "data/research/normalized/sleep_samples/sleep_samples.jsonl",
+      "limitations": ["47 participants and 253 nights", "large download (5.9 GB ZIP; 27.9 GB uncompressed)", "research files, not direct HealthKit API payload", "only one night sample downloaded due slow full archive throughput", "labels.mat preserved without parsing because SciPy is not installed"]
+    },
+    {
+      "dataset_id": "wesad",
+      "title": "WESAD Wearable Stress and Affect Detection",
+      "source_url": "https://ubi29.informatik.uni-siegen.de/usi/data_wesad.html",
+      "download_url": "https://uni-siegen.sciebo.de/s/HGdUkoNlW1Ub0Gx/download",
+      "license": "Scientific non-commercial use only; attribution required",
+      "license_url": "https://ubi29.informatik.uni-siegen.de/usi/data_wesad.html",
+      "source_citation": "Philip Schmidt, Attila Reiss, Robert Duerichen, Claus Marberger, and Kristof Van Laerhoven, Introducing WESAD, a multimodal dataset for Wearable Stress and Affect Detection, ICMI 2018, DOI: 10.1145/3242969.3242985.",
+      "expected_content": "Chest and wrist wearable signals and participant self-report data.",
+      "ingestion_status": "downloaded_extracted_normalized_metadata",
+      "archive_path": "data/research/archives/wesad/WESAD.zip",
+      "archive_sha256": "5e15d2606adf16d819ba535c1786d92e94bae5ff5392f7ae01fb63f9938fd71c",
+      "normalized_metadata": "data/research/normalized/wesad/wesad_normalized_metadata.jsonl",
+      "limitations": ["15 participants", "dataset owner permits scientific non-commercial use; do not use commercially", "not actual smartwatch export data", "participant pickle signals were not deserialized"]
+    },
+    {
+      "dataset_id": "mmash",
+      "title": "Multilevel Monitoring of Activity and Sleep in Healthy people (MMASH)",
+      "source_url": "https://physionet.org/content/mmash/1.0.0/",
+      "download_url": "https://physionet.org/files/mmash/1.0.0/MMASH.zip",
+      "license": "ODbL 1.0",
+      "license_url": "https://opendatacommons.org/licenses/odbl/1-0/",
+      "source_citation": "Cite MMASH dataset page and its associated publication.",
+      "expected_content": "Per-participant CSVs covering RR intervals, activity, sleep, questionnaires and other measures.",
+      "ingestion_status": "download_pending",
+      "limitations": ["22 young adult male participants", "about 24 hours of data", "mixed clock-time and recording-day fields"]
+    }
+  ],
+  "synthetic_test_corpus": {
+    "status": "generated",
+    "purpose": "deterministic engineering edge cases only; not real or clinical data",
+    "case_count": 18,
+    "path": "data/research/normalized/synthetic/task1_edge_cases.jsonl",
+    "covered_cases": ["unit conversion", "timezone normalization", "invalid units", "out-of-range values", "HRV variants", "future/end-before-start timestamps", "missing-value rejection", "duplicate pair", "cross-source conflict", "relative research timestamps", "research provenance", "minimum baseline-day coverage"]
+  },
+  "normalization_policy": {
+    "preserve_raw_archives": true,
+    "retain_source_dataset_version_participant_file_row": true,
+    "store_raw_and_canonical_units": true,
+    "store_source_timestamp_and_normalized_utc_when_known": true,
+    "do_not_infer_missing_values": true,
+    "keep_datasets_and_subject_ids_separate": true,
+    "dataset_records_are_not_real_user_observations": true
+  }
+}

@@ -1,0 +1,481 @@
+<title>Task 5 Báo cáo dữ liệu</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Báo cáo dễ hiểu cho Product Owner về dữ liệu Task 5, quá trình tổng hợp, phân tích, huấn luyện thử và giới hạn MVP.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout: PO briefing with a clear decision first, then source inventory, data assembly, experiments and gates. */
+:root {
+  --bg: #f2f6f4;
+  --surface: #ffffff;
+  --surface-soft: #e5eeeb;
+  --fg: #1b2b28;
+  --muted: #526761;
+  --line: #cbd8d3;
+  --accent: #087464;
+  --accent-soft: #d7eee8;
+  --warn: #8c570d;
+  --warn-soft: #f7ead6;
+  --bad: #a3413b;
+  --bad-soft: #f6e2df;
+  --good: #2b6b45;
+  --good-soft: #deeee3;
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-4: #eda100;
+  --display: "Alegreya", Georgia, serif;
+  --body: "Source Sans 3", "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101a18;
+    --surface: #192623;
+    --surface-soft: #22332f;
+    --fg: #e4efeb;
+    --muted: #a8bbb5;
+    --line: #354943;
+    --accent: #70d0b8;
+    --accent-soft: #1e4039;
+    --warn: #f0bf73;
+    --warn-soft: #44331e;
+    --bad: #ef9b90;
+    --bad-soft: #462927;
+    --good: #91d4a9;
+    --good-soft: #203d2a;
+    --series-1: #3987e5;
+    --series-2: #d95926;
+    --series-3: #199e70;
+    --series-4: #c98500;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101a18;
+  --surface: #192623;
+  --surface-soft: #22332f;
+  --fg: #e4efeb;
+  --muted: #a8bbb5;
+  --line: #354943;
+  --accent: #70d0b8;
+  --accent-soft: #1e4039;
+  --warn: #f0bf73;
+  --warn-soft: #44331e;
+  --bad: #ef9b90;
+  --bad-soft: #462927;
+  --good: #91d4a9;
+  --good-soft: #203d2a;
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --series-3: #199e70;
+  --series-4: #c98500;
+  color-scheme: dark;
+}
+:root[data-theme="light"] { color-scheme: light; }
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg); font-family: var(--body);
+  font-size: 17px; line-height: 1.58; padding-block: 24px 56px;
+  padding-left: max(18px, env(safe-area-inset-left, 0px));
+  padding-right: max(18px, env(safe-area-inset-right, 0px));
+}
+main { width: min(1080px, 100%); margin-inline: auto; display: grid; gap: 26px; }
+h1,h2,h3,p { margin: 0; }
+h1,h2 { text-wrap: balance; }
+h1 { font: 600 clamp(2.5rem, 7vw, 4.7rem)/.99 var(--display); letter-spacing: -.035em; max-width: 16ch; }
+h2 { font: 600 clamp(1.7rem, 4vw, 2.35rem)/1.08 var(--display); }
+h3 { font-size: 1.12rem; line-height: 1.25; }
+.kicker,.eyebrow,.status,.metric-label,th { font: 500 .72rem/1.35 var(--mono); text-transform: uppercase; letter-spacing: .075em; }
+.kicker,.eyebrow { color: var(--accent); }
+.hero { display: grid; grid-template-columns: minmax(0,1.3fr) minmax(260px,.7fr); gap: 26px; align-items: end; border-bottom: 1px solid var(--line); padding: 8px 0 24px; }
+.hero-copy { display: grid; gap: 17px; min-width: 0; }
+.hero-copy p { max-width: 68ch; color: var(--muted); }
+.callout { border: 1px solid var(--line); border-top: 4px solid var(--warn); background: var(--surface); padding: 18px; display: grid; gap: 10px; }
+.callout p { color: var(--muted); font-size: .95rem; }
+.pill { display: inline-flex; width: fit-content; border-radius: 999px; padding: 5px 10px; background: var(--warn-soft); color: var(--warn); font: 600 .69rem var(--mono); text-transform: uppercase; letter-spacing: .06em; }
+.summary { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 10px; }
+.stat { min-width: 0; padding: 14px 15px; background: var(--surface-soft); }
+.stat b { display: block; font: 600 1.25rem var(--mono); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.stat span { display: block; margin-top: 6px; color: var(--muted); font-size: .82rem; line-height: 1.35; }
+.section-head { display: flex; align-items: end; justify-content: space-between; gap: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+.section-head > div { display: grid; gap: 4px; }
+.section-head p { color: var(--muted); font-size: .91rem; max-width: 44ch; }
+.stack { display: grid; gap: 12px; }
+ .table-wrap { width: 100%; overflow-x: auto; border: 1px solid var(--line); background: var(--surface); }
+.chart-panel { background: var(--surface); border: 1px solid var(--line); padding: 18px; display: grid; gap: 12px; min-width: 0; }
+.chart-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
+.chart-wrap { width: 100%; overflow-x: auto; position: relative; }
+.report-chart { display: block; width: 100%; height: auto; overflow: visible; }
+.report-chart text { font: 12px var(--body); fill: var(--muted); }
+.report-chart .gridline { stroke: var(--line); stroke-width: 1; }
+.report-chart .baseline { stroke: var(--muted); stroke-width: 1; }
+.chart-legend { display: flex; flex-wrap: wrap; gap: 14px; color: var(--muted); font-size: .84rem; }
+.chart-legend span { display: inline-flex; align-items: center; gap: 7px; }
+.chart-key { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+.chart-hint { color: var(--muted); font-size: .86rem; }
+.chart-tooltip { position: fixed; z-index: 30; pointer-events: none; max-width: min(280px, calc(100vw - 32px)); background: var(--surface); color: var(--fg); border: 1px solid var(--line); padding: 8px 10px; font-size: .85rem; box-shadow: 0 3px 12px rgba(0,0,0,.14); }
+.report-chart [tabindex="0"] { cursor: help; }
+.report-chart [tabindex="0"]:focus-visible { stroke: var(--accent); stroke-width: 3; outline: none; }
+.chart-panel { background: var(--surface); border: 1px solid var(--line); padding: 18px; display: grid; gap: 12px; min-width: 0; }
+.chart-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
+.chart-wrap { width: 100%; overflow-x: auto; position: relative; }
+.report-chart { display: block; width: 100%; height: auto; overflow: visible; }
+.report-chart text { font: 12px var(--body); fill: var(--muted); }
+.report-chart .gridline { stroke: var(--line); stroke-width: 1; }
+.report-chart .baseline { stroke: var(--muted); stroke-width: 1; }
+.chart-legend { display: flex; flex-wrap: wrap; gap: 14px; color: var(--muted); font-size: .84rem; }
+.chart-legend span { display: inline-flex; align-items: center; gap: 7px; }
+.chart-key { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+.chart-hint { color: var(--muted); font-size: .86rem; }
+.chart-tooltip { position: fixed; z-index: 30; pointer-events: none; max-width: min(280px, calc(100vw - 32px)); background: var(--surface); color: var(--fg); border: 1px solid var(--line); padding: 8px 10px; font-size: .85rem; box-shadow: 0 3px 12px rgba(0,0,0,.14); }
+.report-chart [tabindex="0"] { cursor: help; }
+.report-chart [tabindex="0"]:focus-visible { stroke: var(--accent); stroke-width: 3; outline: none; }
+table { border-collapse: collapse; width: 100%; min-width: 740px; font-size: .9rem; font-variant-numeric: tabular-nums; }
+.chart-panel { background: var(--surface); border: 1px solid var(--line); padding: 18px; display: grid; gap: 12px; min-width: 0; }
+.chart-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
+.chart-wrap { width: 100%; overflow-x: auto; position: relative; }
+.report-chart { display: block; width: 100%; height: auto; overflow: visible; }
+.report-chart text { font: 12px var(--body); fill: var(--muted); }
+.report-chart .gridline { stroke: var(--line); stroke-width: 1; }
+.report-chart .baseline { stroke: var(--muted); stroke-width: 1; }
+.chart-legend { display: flex; flex-wrap: wrap; gap: 14px; color: var(--muted); font-size: .84rem; }
+.chart-legend span { display: inline-flex; align-items: center; gap: 7px; }
+.chart-key { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+.chart-hint { color: var(--muted); font-size: .86rem; }
+.chart-tooltip { position: fixed; z-index: 30; pointer-events: none; max-width: min(280px, calc(100vw - 32px)); background: var(--surface); color: var(--fg); border: 1px solid var(--line); padding: 8px 10px; font-size: .85rem; box-shadow: 0 3px 12px rgba(0,0,0,.14); }
+.report-chart [tabindex="0"] { cursor: help; }
+.report-chart [tabindex="0"]:focus-visible { stroke: var(--accent); stroke-width: 3; outline: none; }
+th,td { padding: 11px 13px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+th { color: var(--muted); background: var(--surface-soft); }
+tr:last-child td { border-bottom: 0; }
+td p + p { margin-top: 5px; }
+.state { display: inline-block; border-radius: 999px; padding: 3px 8px; white-space: nowrap; font: 600 .68rem var(--mono); text-transform: uppercase; letter-spacing: .04em; }
+.state.available { background: var(--good-soft); color: var(--good); }
+.state.partial { background: var(--warn-soft); color: var(--warn); }
+.state.research { background: var(--accent-soft); color: var(--accent); }
+.state.no { background: var(--bad-soft); color: var(--bad); }
+.cols { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
+.card { min-width: 0; background: var(--surface); border: 1px solid var(--line); padding: 18px; display: grid; align-content: start; gap: 11px; }
+.card p,.card li { color: var(--muted); font-size: .94rem; }
+ul,ol { margin: 0; padding-left: 1.2rem; display: grid; gap: 7px; }
+.note { background: var(--accent-soft); border-left: 3px solid var(--accent); padding: 15px 17px; display: grid; gap: 5px; }
+.note.warn { background: var(--warn-soft); border-color: var(--warn); }
+.note p { font-size: .94rem; }
+.term { font-weight: 700; color: var(--fg); }
+.source-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.source-list a { display: inline-block; border: 1px solid var(--line); background: var(--surface); padding: 6px 9px; font-size: .82rem; text-decoration: none; }
+a { color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible { outline: 3px solid var(--warn); outline-offset: 3px; }
+.footer { border-top: 1px solid var(--line); padding-top: 13px; display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: .8rem; }
+@media(max-width:760px) {
+  body { padding-block: 16px 38px; }
+  .hero { grid-template-columns: 1fr; }
+  .summary { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .cols { grid-template-columns: 1fr; }
+  .section-head { align-items: start; flex-direction: column; }
+  .card { padding: 15px; }
+}
+  .chart-grid { grid-template-columns: 1fr; }
+  .chart-panel { padding: 15px; }
+}
+@media(prefers-reduced-motion:reduce) { * { scroll-behavior: auto !important; } }
+</style>
+<header>
+<main>
+  <section class="hero" aria-labelledby="title">
+    <div class="hero-copy">
+      <div class="kicker">Báo cáo dữ liệu · Huấn luyện thử · Đánh giá</div>
+      <h1 id="title">Task 5: dữ liệu đã cho ta biết điều gì?</h1>
+      <p>Tài liệu này tóm tắt các bộ dữ liệu đã tải, cách ghép số đo với câu trả lời khảo sát, các thử nghiệm mô hình và những giới hạn cần hiểu trước khi làm tính năng cho người dùng.</p>
+    </div>
+    <aside class="callout">
+      <span class="pill">Kết luận cho sản phẩm</span>
+      <strong>Đã hoàn thành nền tảng nghiên cứu và chạy thử dự báo. Chưa có mô hình đủ chắc để kết luận người dùng mệt, hồi phục kém hoặc cần cảnh báo.</strong>
+      <p>Có thể trình diễn biểu đồ chỉ số, độ đầy đủ dữ liệu và lịch sử tự khai. Dự báo fatigue/recovery và cảnh báo nên tiếp tục ở chế độ thử nội bộ.</p>
+    </aside>
+  </section>
+
+  <section class="summary" aria-label="Tổng quan dữ liệu">
+    <div class="stat"><b>802.292</b><span>Giá trị wearable không thiếu trong bảng tổng hợp</span></div>
+    <div class="stat"><b>106.518</b><span>Câu trả lời khảo sát được giữ riêng khỏi số đo</span></div>
+    <div class="stat"><b>5.221</b><span>Lần trả lời câu hỏi “Hôm qua bạn có thấy mệt không?”</span></div>
+    <div class="stat"><b>14/14</b><span>Bài kiểm tra phần mềm Task 5 đều đạt</span></div>
+  </section>
+
+  <section class="stack" aria-labelledby="inventory-title">
+    <div class="section-head">
+      <div><div class="eyebrow">01 · Nguồn dữ liệu</div><h2 id="inventory-title">Đã tải gì, và dùng được vào việc gì?</h2></div>
+      <p>Các bộ khác nhau về đồng hồ, cách đo, nhóm người và câu hỏi. Chúng được giữ thành từng nguồn riêng.</p>
+    </div>
+    <div class="table-wrap" role="region" aria-label="Danh sách nguồn dữ liệu" tabindex="0">
+      <table>
+        <thead><tr><th>Nguồn</th><th>Hiện có</th><th>Phù hợp để nghiên cứu</th><th>Chưa thể kết luận</th><th>Trạng thái</th></tr></thead>
+        <tbody>
+          <tr><td><b>Zenodo 8018238</b><br>Fitbit + khảo sát hằng ngày</td><td>6.992 dòng ngày-feature; 621.544 giá trị không thiếu. Có câu hỏi tiredness, khảo sát tuần và thông tin ban đầu.</td><td>Thử dự báo câu trả lời fatigue tự khai; phân tích sơ bộ số đo và cảm giác mệt.</td><td>Không có nhãn hồi phục đã xác nhận. Một số định nghĩa/đơn vị Fitbit cần kiểm tra.</td><td><span class="state available">Đã tải, đã dùng</span></td></tr>
+          <tr><td><b>LifeSnaps / RAIS</b><br>Fitbit Sense + khảo sát</td><td>7.410 ngày từ 71 người; có RHR, RMSSD, ngủ, bước chân và STAI/PANAS/BREQ/TTM/SEMA.</td><td>Xem xu hướng, dự báo riêng từng số đo, phân tích thăm dò với khảo sát.</td><td>Là Fitbit chứ không phải Apple Watch. SEMA, STAI, PANAS và vendor scores không phải cùng một loại nhãn.</td><td><span class="state available">Đã tổng hợp</span></td></tr>
+          <tr><td><b>Zenodo 4266157</b><br>Wearable + fatigue</td><td>28 tệp cảm biến; 431 ngày ghép được từ 28 người. Có câu trả lời fatigue thang 1–10 và HR, HRV, bước chân, hô hấp, nhiệt độ.</td><td>Kiểm tra độc lập ban đầu xem số đo cảm biến có liên quan đến fatigue tự khai không.</td><td>Đây là nghiên cứu thử nghiệm nhỏ ở người khỏe mạnh; cách hỏi và thang điểm khác Zenodo 8018238.</td><td><span class="state available">Đã tải đủ</span></td></tr>
+          <tr><td><b>BIDSleep / PhysioNet</b><br>Apple Watch + nhãn ngủ EEG</td><td>47 người, 253 đêm; có nhịp tim ban đêm và nhãn ngủ từ điện não đồ. 13 tệp chuyển động đang tải dở.</td><td>Nghiên cứu nhận diện giai đoạn ngủ, sau khi đọc và căn đúng nhãn theo thời gian.</td><td>Không có nhãn fatigue/recovery. Tệp chuyển động dở không được dùng.</td><td><span class="state partial">Có phần tải dở</span></td></tr>
+          <tr><td><b>Figshare Apple Watch HRV</b></td><td>15 tệp, chủ yếu bảng HRV/ngủ đã tính và tài liệu phân tích; liên quan cohort Sleep-Accel.</td><td>Tham khảo HRV dẫn xuất và mối liên hệ với giấc ngủ.</td><td>Không phải cohort độc lập với Sleep-Accel; không có nhãn fatigue hoặc recovery.</td><td><span class="state available">Đã tải</span></td></tr>
+          <tr><td><b>PAMAP2</b></td><td>9 người, bài tập có gắn nhãn hoạt động, nhịp tim và chuyển động; thời gian là thời gian tương đối trong buổi đo.</td><td>Thử nhận diện hoạt động và xử lý cảm biến chuyển động.</td><td>Không phải chuỗi sức khỏe theo ngày; không hợp để huấn luyện dự báo recovery hằng ngày.</td><td><span class="state available">Đã có</span></td></tr>
+          <tr><td><b>PPG-DaLiA</b></td><td>Metadata và bảng hoạt động của 15 người.</td><td>Tham khảo cấu trúc nguồn; chuẩn bị bước nhập tín hiệu có kiểm soát.</td><td>Tín hiệu chính chưa được chuyển đổi; chưa có trong bảng huấn luyện.</td><td><span class="state partial">Metadata thôi</span></td></tr>
+          <tr><td><b>Sleep-Accel / PhysioNet</b></td><td>File tải dở khoảng 25 MB; bản đầy đủ khoảng 550 MB.</td><td>Khi tải xong: thử Apple Watch HR/chuyển động cùng nhãn ngủ PSG.</td><td>File hiện không phải ZIP hợp lệ, chưa giải nén và chưa dùng.</td><td><span class="state partial">Tải chưa xong</span></td></tr>
+          <tr><td><b>MMASH</b></td><td>File tải dở khoảng 2 MB; không phải ZIP hợp lệ.</td><td>Nếu tải được: nghiên cứu ngắn hạn HRV, ngủ, hoạt động và bảng hỏi.</td><td>Đo khoảng một ngày, không phù hợp xu hướng nhiều ngày và chưa có nhãn recovery.</td><td><span class="state partial">Tải chưa xong</span></td></tr>
+          <tr><td><b>Datasheet1</b></td><td>280 dòng thống kê tổng hợp.</td><td>Tra cứu danh sách biến và số liệu mô tả.</td><td>Không có từng người/từng ngày nên không phải dữ liệu huấn luyện.</td><td><span class="state no">Không dùng train</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="stack" aria-labelledby="pipeline-title">
+    <div class="section-head">
+      <div><div class="eyebrow">02 · Quá trình tổng hợp</div><h2 id="pipeline-title">Từ file gốc thành bảng có thể phân tích</h2></div>
+      <p>Không gộp các bộ chỉ vì cùng có cột “nhịp tim” hay “giấc ngủ”.</p>
+    </div>
+    <div class="cols">
+      <article class="card">
+        <h3>Bảng số đo</h3>
+        <p><a href="../dataset/harmonized/master/observations_long.csv">observations_long.csv</a> có 802.292 giá trị: 621.544 từ cohort Zenodo 8018238 và 180.748 từ LifeSnaps/RAIS. Mỗi dòng ghi nguồn, người trong nguồn đó, ngày, tên chỉ số, giá trị và thông tin file gốc.</p>
+        <p>Đơn vị nào chưa rõ được giữ là “chưa xác minh”; không tự đoán để làm cho các cột giống nhau.</p>
+      </article>
+      <article class="card">
+        <h3>Bảng câu trả lời</h3>
+        <p><a href="../dataset/harmonized/master/labels_long.csv">labels_long.csv</a> có 106.518 câu trả lời. Câu hỏi mệt hằng ngày, khảo sát tuần, STAI, PANAS và các khảo sát khác vẫn phân biệt riêng.</p>
+        <p>Một câu trả lời khảo sát không bị biến thành số đo từ đồng hồ. ID người tham gia ở các bộ khác nhau cũng không được nối với nhau.</p>
+      </article>
+      <article class="card">
+        <h3>Tập thử fatigue</h3>
+        <p><a href="../dataset/harmonized/master/fatigue_daily_training_examples.csv">fatigue_daily_training_examples.csv</a> có 5.221 câu “Hôm qua bạn có thấy mệt không?” từ 203 người.</p>
+        <p>Mỗi lần trả lời được ghép với số đo của 7 ngày trước ngày được hỏi. Chỉ giữ câu trả lời có số đo cảm biến phù hợp; người không trả lời không bị xem là “không mệt”.</p>
+      </article>
+      <article class="card">
+        <h3>Dữ liệu giả lập để thử giao diện</h3>
+        <p>Thư mục <a href="../dataset/harmonized/master/synthetic_engineering_only/">synthetic_engineering_only</a> chứa điểm tương đối được tính từ số đo để kiểm tra hiển thị và quy tắc.</p>
+        <p>Các dòng đều đánh dấu là dữ liệu giả lập. Không dùng để huấn luyện, đánh giá hoặc gọi là điểm hồi phục thật.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="stack" aria-labelledby="eda-title">
+    <div class="section-head">
+      <div><div class="eyebrow">03 · Khám phá dữ liệu</div><h2 id="eda-title">Dữ liệu nói được gì trước khi dùng mô hình?</h2></div>
+      <p>Đây là mô tả dữ liệu và mối liên hệ, chưa phải bằng chứng nguyên nhân.</p>
+    </div>
+    <div class="cols">
+      <article class="card">
+        <h3>Câu trả lời fatigue không cân bằng</h3>
+        <ul>
+          <li>“Không mệt”: 1.146 câu.</li><li>“Hơi mệt”: 1.829 câu.</li><li>“Mệt vừa”: 991 câu.</li><li>“Khá mệt”: 820 câu.</li><li>“Rất mệt”: 435 câu.</li>
+        </ul>
+        <p>Vì câu trả lời phổ biến nhất là “hơi mệt”, một cách đoán đơn giản đã đạt sai số trung bình khoảng 0,97 mức. Mô hình phải tốt hơn cách đoán đơn giản này để có lý do dùng.</p>
+      </article>
+      <article class="card">
+        <h3>Thiếu dữ liệu theo ngày</h3>
+        <p>Cohort Zenodo 8018238 có 6.992 ngày cảm biến, nhưng dữ liệu ghép được với câu trả lời và 7 ngày trước đó ít hơn nhiều. Trong lần chuẩn bị ban đầu, 2.404 câu trả lời không có ngày cảm biến trước phù hợp. Bộ train chỉ đại diện cho người/ngày có cả phản hồi lẫn cảm biến, không phải toàn bộ người được mời tham gia.</p>
+        <p>Một metric trung bình 7 ngày có thể được tính từ số ngày đo khác nhau. Vì vậy cần xem độ phủ và số ngày đo cùng với giá trị.</p>
+      </article>
+      <article class="card">
+        <h3>Thói quen và chỉ số</h3>
+        <p>Đã so bước chân với giấc ngủ ngày sau, nhịp tim nghỉ và RMSSD. Các mối liên hệ chung thường nhỏ; một số còn đổi chiều hoặc yếu đi khi tính đến khác biệt giữa mỗi người.</p>
+        <p>Cách diễn đạt phù hợp là “hai chỉ số có thể thay đổi cùng nhau”, không phải “đi bộ nhiều làm nhịp tim thay đổi”.</p>
+      </article>
+      <article class="card">
+        <h3>Phát hiện ngày lệch thường</h3>
+        <p>Phép so sánh với mức thường thấy của từng người đã đánh dấu 157 ngày RHR và 86 ngày RMSSD để xem lại.</p>
+        <p>Chưa có chuyên gia/người tham gia xác nhận ngày nào là bất thường thật. Vì vậy chưa biết bao nhiêu dấu hiệu là đúng, bao nhiêu là báo nhầm.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="stack" aria-labelledby="charts-title">
+    <div class="section-head">
+      <div><div class="eyebrow">04 · Biểu đồ kết quả</div><h2 id="charts-title">Nhìn nhanh vào dữ liệu và các lần thử</h2></div>
+      <p>Biểu đồ đi kèm số liệu và lời giải thích. Sai số càng thấp càng tốt; mỗi nguồn và cohort vẫn được giữ riêng.</p>
+    </div>
+    <article class="chart-panel" aria-labelledby="dist-title">
+      <div><div class="eyebrow">Phân bố câu trả lời</div><h3 id="dist-title">Mức “hơi mệt” xuất hiện nhiều nhất</h3></div>
+      <div class="chart-wrap"><svg id="fatigueDist" class="report-chart" viewBox="0 0 820 300" role="img" aria-labelledby="dist-title dist-desc"><desc id="dist-desc">Số câu trả lời ở năm mức tự khai từ không mệt đến rất mệt.</desc></svg></div>
+      <p class="chart-hint">Tổng cộng 5.221 câu trả lời từ 203 người. Đây là tự khai, không phải chẩn đoán.</p>
+    </article>
+    <div class="chart-grid">
+      <article class="chart-panel" aria-labelledby="newuser-title">
+        <div><div class="eyebrow">Người mới</div><h3 id="newuser-title">Mô hình chưa thắng cách đoán đơn giản</h3></div>
+        <div class="chart-legend"><span><i class="chart-key" style="background:var(--series-1)"></i>Cách đoán đơn giản</span><span><i class="chart-key" style="background:var(--series-2)"></i>Mô hình</span></div>
+        <div class="chart-wrap"><svg id="newUserChart" class="report-chart" viewBox="0 0 620 340" role="img" aria-labelledby="newuser-title newuser-desc"><desc id="newuser-desc">Sai số của cách đoán đơn giản so với năm mô hình khi kiểm tra người chưa thấy.</desc></svg></div>
+        <p class="chart-hint">Sai số trung bình theo bậc mức mệt. Giá trị thấp hơn tốt hơn; các mô hình không cải thiện ổn định so với mốc 0,973.</p>
+      </article>
+      <article class="chart-panel" aria-labelledby="known-title">
+        <div><div class="eyebrow">Người đã có lịch sử</div><h3 id="known-title">Kết quả thay đổi theo từng giai đoạn</h3></div>
+        <div class="chart-legend"><span><i class="chart-key" style="background:var(--series-1)"></i>Trung bình 3 câu cũ</span><span><i class="chart-key" style="background:var(--series-2)"></i>Wearable + câu cũ</span></div>
+        <div class="chart-wrap"><svg id="knownUserChart" class="report-chart" viewBox="0 0 620 340" role="img" aria-labelledby="known-title known-desc"><desc id="known-desc">So sánh sai số trong ba giai đoạn kiểm tra tương lai.</desc></svg></div>
+        <p class="chart-hint">Mô hình kết hợp thắng ở một giai đoạn trong ba. Lịch sử tự khai là mốc dự đoán rất mạnh.</p>
+      </article>
+    </div>
+    <div class="chart-grid">
+      <article class="chart-panel" aria-labelledby="independent-title">
+        <div><div class="eyebrow">Bộ dữ liệu độc lập</div><h3 id="independent-title">Chênh lệch nhỏ trong thử nghiệm 28 người</h3></div>
+        <div class="chart-legend"><span><i class="chart-key" style="background:var(--series-1)"></i>Cách đoán đơn giản</span><span><i class="chart-key" style="background:var(--series-2)"></i>Mô hình</span></div>
+        <div class="chart-wrap"><svg id="independentChart" class="report-chart" viewBox="0 0 620 230" role="img" aria-labelledby="independent-title independent-desc"><desc id="independent-desc">Sai số trung bình của mô hình và cách đoán đơn giản trong cohort Zenodo 4266157.</desc></svg></div>
+        <p class="chart-hint">Sai số 1,888 so với 1,941 trên thang 1–10; đây mới là kiểm tra ban đầu.</p>
+      </article>
+      <article class="chart-panel" aria-labelledby="coverage-chart-title">
+        <div><div class="eyebrow">Độ phủ nguồn</div><h3 id="coverage-chart-title">Quy mô đo lường khác nhau giữa các bộ</h3></div>
+        <div class="chart-wrap"><svg id="coverageChart" class="report-chart" viewBox="0 0 620 300" role="img" aria-labelledby="coverage-chart-title coverage-desc"><desc id="coverage-desc">Số ngày hoặc đêm ghi nhận trong một số bộ dữ liệu. Định nghĩa mỗi nguồn khác nhau.</desc></svg></div>
+        <p class="chart-hint">Định nghĩa ngày ghép khác nhau nên không so sánh chất lượng trực tiếp. Zenodo 4266157 ghi 405 ngày trong nghiên cứu; adapter cục bộ ghép được 431 ngày.</p>
+      </article>
+    </div>
+    <div class="table-wrap" role="region" aria-label="Bảng số liệu biểu đồ" tabindex="0">
+      <table><thead><tr><th>Thử nghiệm</th><th>Kết quả</th><th>Mốc so sánh</th><th>Diễn giải</th></tr></thead><tbody>
+        <tr><td>Fatigue · người mới</td><td>Sai số mô hình 0,97–1,18</td><td>0,973</td><td>Chưa tốt hơn ổn định</td></tr>
+        <tr><td>Fatigue · đã có lịch sử</td><td>Wearable + câu cũ: 0,635 / 0,631 / 0,682</td><td>Trung bình 3 câu cũ: 0,642 / 0,650 / 0,788</td><td>Thắng 1 trong 3 giai đoạn</td></tr>
+        <tr><td>Cohort độc lập 4266157</td><td>1,888 trên thang 1–10</td><td>1,941</td><td>Chênh lệch nhỏ; 28 người</td></tr>
+        <tr><td>Thời lượng ngủ ngày sau</td><td>Sai trung bình 56,8 phút</td><td>71,8 phút</td><td>Tín hiệu thử ban đầu; chưa kiểm chứng bên ngoài</td></tr>
+      </tbody></table>
+    </div>
+    <p class="chart-hint">Các cột trong biểu đồ có thể chọn bằng bàn phím để đọc số liệu; bảng bên trên giữ các kết quả chính mà không cần rê chuột.</p>
+  </section>
+
+  <section class="stack" aria-labelledby="training-title">
+    <div class="section-head">
+      <div><div class="eyebrow">05 · Huấn luyện và kiểm tra</div><h2 id="training-title">Đã dạy máy đoán gì, và kiểm tra ra sao?</h2></div>
+      <p>“Giữ riêng người kiểm tra” nghĩa là máy không thấy dữ liệu của những người đó khi học.</p>
+    </div>
+    <div class="note">
+      <strong>Giải thích cách đọc sai số</strong>
+      <p>Với câu trả lời 5 mức, sai số 1 nghĩa là dự đoán lệch trung bình khoảng một mức. Cách đoán đơn giản dùng làm mốc so sánh. Sai số thấp hơn là tốt hơn. Một mô hình chỉ đáng cân nhắc nếu cải thiện lặp lại trên dữ liệu chưa dùng để chọn mô hình.</p>
+    </div>
+    <div class="table-wrap" role="region" aria-label="So sánh các cách dự đoán tiredness" tabindex="0">
+      <table>
+        <thead><tr><th>Câu hỏi cần đoán</th><th>Kiểm tra như thế nào</th><th>Sai số mô hình</th><th>Sai số cách đơn giản</th><th>Kết luận</th></tr></thead>
+        <tbody>
+          <tr><td>Mức mệt của người chưa từng xuất hiện trong dữ liệu học</td><td>5 lượt kiểm tra, mỗi lượt giữ riêng một nhóm người</td><td>Khoảng 0,97–1,18 mức, tùy cách đoán</td><td>Khoảng 0,97 mức</td><td><span class="state partial">Chưa tốt hơn ổn định</span></td></tr>
+          <tr><td>Lần check-in tiếp theo của người đã có lịch sử</td><td>Dùng giai đoạn sau để kiểm tra, cách ly 7 ngày giữa học và kiểm tra</td><td>Chỉ wearable: khoảng 0,85 mức. Thêm câu trả lời cũ: khoảng 0,62–0,68</td><td>Trung bình 3 câu trả lời cũ: khoảng 0,61–0,79</td><td><span class="state partial">Gần baseline; thắng không đều</span></td></tr>
+          <tr><td>Mức fatigue của bộ dữ liệu khác, thang 1–10</td><td>Chia riêng người trong từng lượt; 28 người tổng cộng</td><td>Sai trung bình 1,89 điểm</td><td>Sai trung bình 1,94 điểm</td><td><span class="state partial">Chênh lệch nhỏ, mẫu nhỏ</span></td></tr>
+          <tr><td>Thời lượng ngủ ngày kế tiếp</td><td>Giữ riêng một nhóm người để kiểm tra; 51 người dùng được</td><td>Sai trung bình khoảng 57 phút</td><td>Sai trung bình khoảng 72 phút</td><td><span class="state research">Tín hiệu ban đầu</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="cols">
+      <article class="card">
+        <h3>Fatigue: người mới</h3>
+        <p>Một số mô hình nhận diện được các mức mệt tốt hơn, nhưng khi tính “đoán lệch bao nhiêu mức”, chúng vẫn thường không tốt hơn cách đoán mức phổ biến. Không thể chọn riêng chỉ số có vẻ đẹp hơn rồi kết luận mô hình thành công.</p>
+      </article>
+      <article class="card">
+        <h3>Fatigue: người đã có lịch sử</h3>
+        <p>Ba lần tự khai trước đây là mốc dự đoán rất mạnh. Khi chỉ dùng đồng hồ, kết quả kém hơn. Khi thêm lịch sử check-in, mô hình gần baseline nhưng chưa thắng ổn định. Điều này có thể hữu ích cho trải nghiệm “xem lịch sử của bạn”, chưa chứng minh đồng hồ tự nhận ra mệt.</p>
+      </article>
+      <article class="card">
+        <h3>Sleep, RHR và RMSSD</h3>
+        <p>Thời lượng ngủ là metric duy nhất trong ba mô hình được huấn luyện có lần thử tốt hơn baseline. RHR và RMSSD không hơn. Đây là một lần chia dữ liệu để kiểm tra; cần xác nhận lại trên giai đoạn/người khác.</p>
+      </article>
+      <article class="card">
+        <h3>Recovery chưa có nhãn thật</h3>
+        <p>Không bộ nào hiện có câu trả lời trực tiếp và rõ ràng kiểu “hôm nay tôi cảm thấy hồi phục ở mức nào?” đủ để làm nhãn Recovery. Không được lấy HRV, giờ ngủ hay điểm giả lập làm câu trả lời thay thế.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="stack" aria-labelledby="eda-train-title">
+    <div class="section-head">
+      <div><div class="eyebrow">06 · Cách bảo vệ kết quả</div><h2 id="eda-train-title">Những gì đã làm để tránh tự đánh lừa mình</h2></div>
+      <p>Số dòng lớn không có nghĩa là nhiều người độc lập. Một người trả lời nhiều ngày vẫn chỉ là một người.</p>
+    </div>
+    <div class="cols">
+      <article class="card">
+        <h3>Chia kiểm tra đúng câu hỏi</h3>
+        <p>Nếu muốn biết mô hình dùng được cho người mới hay không, giữ toàn bộ dữ liệu của người kiểm tra khỏi lúc học. Nếu muốn dự đoán cho người đang dùng ứng dụng, chỉ dùng ngày và câu trả lời đã có trước thời điểm dự đoán. Không xáo trộn ngẫu nhiên từng dòng vì như vậy cùng một người có thể lọt vào cả phần học lẫn phần kiểm tra.</p>
+      </article>
+      <article class="card">
+        <h3>Để trống khi thiếu, không bịa</h3>
+        <p>Giá trị thiếu được giữ rõ ràng; dữ liệu giả lập không vào tập huấn luyện hoặc chấm điểm. Các câu hỏi tuần được để riêng vì chúng hỏi về cả tuần trước, không thể coi như câu trả lời cho ngày kế tiếp.</p>
+      </article>
+      <article class="card">
+        <h3>Không gọi tương quan là nguyên nhân</h3>
+        <p>Chạy nhiều bộ dữ liệu không biến một mối liên hệ thành bằng chứng nguyên nhân. Bệnh, thuốc, thói quen, thiết bị và việc đeo đồng hồ có thể cùng ảnh hưởng đến số liệu.</p>
+      </article>
+      <article class="card">
+        <h3>Kiểm thử phần mềm</h3>
+        <p>14 bài kiểm tra của pipeline xử lý dữ liệu đều đạt ở lần chạy gần nhất. Điều này cho biết các quy tắc phần mềm được kiểm tra, không chứng minh dự đoán sức khỏe chính xác.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="stack" aria-labelledby="po-title">
+    <div class="section-head">
+      <div><div class="eyebrow">07 · Gợi ý cho bản thử nghiệm</div><h2 id="po-title">Có thể làm gì ngay, và còn phải làm gì?</h2></div>
+    </div>
+    <div class="cols">
+      <article class="card">
+        <h3>Có thể trình diễn ngay</h3>
+        <ul>
+          <li>Biểu đồ các chỉ số người dùng đã đồng ý chia sẻ.</li>
+          <li>Cho biết ngày nào có dữ liệu và ngày nào bị thiếu.</li>
+          <li>Cho người dùng tự ghi mức mệt; hiển thị lại lịch sử câu trả lời của chính họ.</li>
+          <li>Thử dự báo thời lượng ngủ dưới nhãn “thử nghiệm”, không gắn với kết luận sức khỏe.</li>
+        </ul>
+      </article>
+      <article class="card">
+        <h3>Chưa đưa ra người dùng</h3>
+        <ul>
+          <li>“Bạn hồi phục kém” hoặc một điểm Recovery do dự án tự tính.</li>
+          <li>Cảnh báo rằng một thay đổi HRV/RHR là sự kiện sức khỏe thật.</li>
+          <li>Lời khuyên riêng dựa trên mô hình tiredness hiện tại.</li>
+          <li>Thông báo tự động trước khi đo tỷ lệ báo nhầm và mức độ hữu ích.</li>
+        </ul>
+      </article>
+    </div>
+    <div class="note">
+      <strong>Bước có giá trị nhất để cải thiện</strong>
+      <p>Mời người tham gia dùng thử trong vài tuần; hỏi riêng mức mệt và mức cảm thấy sẵn sàng/hồi phục, vào giờ cố định. Ghi lại khi không trả lời, đồng hồ không được đeo và thiết bị nào tạo số đo. Sau đó đánh giá trên những người và thời gian chưa dùng để chọn mô hình.</p>
+    </div>
+    <div class="note warn">
+      <strong>LLM nên làm gì?</strong>
+      <p>LLM có thể giúp đọc tài liệu hướng dẫn để gợi ý tên/ý nghĩa cột dữ liệu, nhưng người phụ trách phải kiểm tra nguồn. Không dùng LLM để tự tạo nhịp tim, giấc ngủ, fatigue hay Recovery rồi coi như dữ liệu thật.</p>
+    </div>
+  </section>
+
+  <section class="stack" aria-labelledby="files-title">
+    <div class="section-head">
+      <div><div class="eyebrow">08 · Tài liệu và tệp kết quả</div><h2 id="files-title">Mở xem chi tiết</h2></div>
+      <p>Các tệp này dành cho nhóm sản phẩm và kỹ thuật muốn xem cách làm hoặc con số đầy đủ.</p>
+    </div>
+    <div class="source-list">
+      <a href="../dataset/harmonized/master/README.md">Giới thiệu bộ dữ liệu tổng hợp</a>
+      <a href="../dataset/harmonized/master/master_manifest.json">Danh mục nguồn và số lượng</a>
+      <a href="../docs/TASK5_IMPROVEMENT_EXPERIMENTS.md">Kết quả thử mô hình fatigue</a>
+      <a href="../dataset/harmonized/master/fatigue_gap_rolling_evaluation.json">Kiểm tra theo thời gian</a>
+      <a href="../dataset/harmonized/independent_fatigue_4266157/external_cohort_evaluation.json">Cohort kiểm tra riêng</a>
+      <a href="../dataset/harmonized/enriched/models/">Thử dự báo ngủ, RHR, RMSSD</a>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <span>Tóm tắt cho nhóm sản phẩm · Các số liệu là nghiên cứu, chưa phải xác nhận lâm sàng.</span>
+    <span>Task 5</span>
+  </footer>
+</main>
+<script>
+const chartData = {
+  fatigue: [{label:'Không mệt',value:1146},{label:'Hơi mệt',value:1829},{label:'Mệt vừa',value:991},{label:'Khá mệt',value:820},{label:'Rất mệt',value:435}],
+  newUser: [{label:'Median đơn giản',base:.973,model:.972},{label:'HGB classifier',base:.973,model:1.126},{label:'HGB làm tròn',base:.973,model:.972},{label:'ExtraTrees cân bằng',base:.973,model:1.178},{label:'RandomForest cân bằng',base:.973,model:1.191}],
+  known: [{label:'Giai đoạn 1 · n=876',base:.642,model:.635},{label:'Giai đoạn 2 · n=320',base:.650,model:.631},{label:'Giai đoạn 3 · n=85',base:.788,model:.682}],
+  independent: [{label:'Cách đoán đơn giản',value:1.941,color:'base'},{label:'Mô hình',value:1.888,color:'model'}],
+  coverage: [{label:'Zenodo 8018238 · ngày ghép',value:3950},{label:'Zenodo 4266157 · adapter',value:431},{label:'BIDSleep · đêm',value:253},{label:'Sleep-Accel · tối đa đêm lab',value:31}]
+};
+const svgNS='http://www.w3.org/2000/svg';
+const cssColor=name=>getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+function makeSvg(tag,attrs={},value){const node=document.createElementNS(svgNS,tag);for(const [key,val] of Object.entries(attrs))node.setAttribute(key,String(val));if(value!==undefined)node.textContent=value;return node;}
+function addSvg(svg,tag,attrs,value){const node=makeSvg(tag,attrs,value);svg.appendChild(node);return node;}
+function axis(svg,{left,top,width,height,max,ticks,format=v=>String(v)}){for(let i=0;i<=ticks;i++){const val=max*i/ticks,y=top+height-height*i/ticks;addSvg(svg,'line',{x1:left,y1:y,x2:left+width,y2:y,class:i===0?'baseline':'gridline'});addSvg(svg,'text',{x:left-9,y:y+4,'text-anchor':'end'},format(val));}}
+function bindChartTip(mark,label,value){const tip=document.getElementById('chartTip');const reveal=(x,y)=>{tip.textContent=label+': '+value;tip.hidden=false;tip.style.left=Math.max(10,Math.min(innerWidth-300,x+12))+'px';tip.style.top=Math.max(10,Math.min(innerHeight-60,y+12))+'px';};mark.addEventListener('pointerenter',e=>reveal(e.clientX,e.clientY));mark.addEventListener('pointermove',e=>reveal(e.clientX,e.clientY));mark.addEventListener('pointerleave',()=>{tip.hidden=true;});mark.addEventListener('focus',()=>reveal(innerWidth/2,innerHeight/2));mark.addEventListener('blur',()=>{tip.hidden=true;});mark.setAttribute('aria-label',label+': '+value);}
+function initChart(id){const svg=document.getElementById(id);svg.replaceChildren();return svg;}
+function drawFatigue(){const svg=initChart('fatigueDist'),left=166,top=24,width=560,row=48,max=2000;axis(svg,{left,top,width,height:row*chartData.fatigue.length,max,ticks:4,format:v=>Math.round(v).toLocaleString('vi-VN')});chartData.fatigue.forEach((d,i)=>{const y=top+i*row+10,w=d.value/max*width;addSvg(svg,'text',{x:left-12,y:y+16,'text-anchor':'end'},d.label);const mark=addSvg(svg,'rect',{x:left,y,width:w,height:24,rx:4,fill:cssColor('--series-1'),tabindex:0,role:'graphics-symbol'});bindChartTip(mark,d.label,d.value.toLocaleString('vi-VN')+' câu trả lời ('+(d.value/5221*100).toFixed(1)+'%)');addSvg(svg,'text',{x:left+w+8,y:y+17},d.value.toLocaleString('vi-VN'));});}
+function drawPairs(id,rows,max,paired){const svg=initChart(id),left=paired?150:165,top=24,width=paired?390:395,row=paired?74:56;axis(svg,{left,top,width,height:row*rows.length,max,ticks:4,format:v=>v.toFixed(1)});rows.forEach((d,i)=>{const y=top+i*row+3;addSvg(svg,'text',{x:left-10,y:y+26,'text-anchor':'end'},d.label);[['base',d.base,cssColor('--series-1'),paired?'Trung bình 3 câu cũ':'Baseline'],['model',d.model,cssColor('--series-2'),paired?'Wearable + câu trả lời cũ':'Mô hình']].forEach(([key,val,color,label],j)=>{const yy=y+j*(paired?24:19),w=val/max*width,mark=addSvg(svg,'rect',{x:left,y:yy,width:w,height:15,rx:3,fill:color,tabindex:0,role:'graphics-symbol'});bindChartTip(mark,d.label,label+': '+Number(val).toFixed(3)+' mức sai số');if(paired||w>40)addSvg(svg,'text',{x:left+w+6,y:yy+12},Number(val).toFixed(3));});});}
+function drawSingle(){const svg=initChart('independentChart'),left=175,top=24,width=355,row=58,max=2.2;axis(svg,{left,top,width,height:row*chartData.independent.length,max,ticks:4,format:v=>v.toFixed(1)});chartData.independent.forEach((d,i)=>{const y=top+i*row+13,w=d.value/max*width;addSvg(svg,'text',{x:left-10,y:y+17,'text-anchor':'end'},d.label);const mark=addSvg(svg,'rect',{x:left,y,width:w,height:24,rx:4,fill:cssColor(d.color==='base'?'--series-1':'--series-2'),tabindex:0,role:'graphics-symbol'});bindChartTip(mark,d.label,'Sai số '+d.value.toFixed(3));addSvg(svg,'text',{x:left+w+7,y:y+17},d.value.toFixed(3));});}
+function drawCoverage(){const svg=initChart('coverageChart'),left=240,top=18,width=295,row=54,max=4000;axis(svg,{left,top,width,height:row*chartData.coverage.length,max,ticks:4,format:v=>Math.round(v).toLocaleString('vi-VN')});chartData.coverage.forEach((d,i)=>{const y=top+i*row+10,w=d.value/max*width;addSvg(svg,'text',{x:left-10,y:y+17,'text-anchor':'end'},d.label);const mark=addSvg(svg,'rect',{x:left,y,width:Math.max(2,w),height:24,rx:4,fill:cssColor('--series-3'),tabindex:0,role:'graphics-symbol'});bindChartTip(mark,d.label,d.value.toLocaleString('vi-VN')+' ngày/đêm; định nghĩa ghép khác nhau');addSvg(svg,'text',{x:left+w+7,y:y+17},d.value.toLocaleString('vi-VN'));});}
+drawFatigue();drawPairs('newUserChart',chartData.newUser,1.3,false);drawPairs('knownUserChart',chartData.known,1,true);drawSingle();drawCoverage();
+</script>
+<div id="chartTip" class="chart-tooltip" role="status" aria-live="polite" hidden></div>
+</header>
